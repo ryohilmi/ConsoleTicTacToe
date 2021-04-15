@@ -71,6 +71,37 @@ char changeDirection(char inputChar)
   }
 }
 
+char calculateWinner(char board[3][3])
+{
+  int lines[8][3][2] = {
+      {{0, 0}, {1, 0}, {2, 0}},
+      {{0, 1}, {1, 1}, {2, 1}},
+      {{0, 2}, {1, 2}, {2, 2}},
+      {{0, 0}, {0, 1}, {0, 2}},
+      {{1, 0}, {1, 1}, {1, 2}},
+      {{2, 0}, {2, 1}, {2, 2}},
+      {{0, 0}, {1, 1}, {2, 2}},
+      {{2, 0}, {1, 1}, {0, 2}},
+  };
+
+  for (int i = 0; i < 8; i++)
+  {
+    int *a = lines[i][0];
+    int *b = lines[i][1];
+    int *c = lines[i][2];
+
+    if (board[*(a + 1)][*a] != 'X' && board[*(a + 1)][*a] != 'O')
+      continue;
+
+    if (board[*(a + 1)][*a] == board[*(b + 1)][*b] && board[*(a + 1)][*a] == board[*(c + 1)][*c])
+    {
+      return board[*(a + 1)][*a];
+    }
+  }
+
+  return '_';
+}
+
 int main()
 {
   char board[3][3] = {' '};
@@ -82,8 +113,18 @@ int main()
   bool isBlinking = true;
   time_t prevTime = time(NULL);
 
+  bool isDone = false;
+  char winner;
+
   while (1)
   {
+    if (isDone)
+    {
+      cout << endl
+           << "!!!!! " << winner << " WINS !!!!!" << endl;
+      break;
+    }
+
     if (difftime(time(NULL), prevTime) == 1)
     {
       isBlinking = !isBlinking;
@@ -108,6 +149,12 @@ int main()
         *currentBlock = isXTurn ? 'X' : 'O';
         isXTurn = !isXTurn;
         isBlinking = false;
+
+        winner = calculateWinner(board);
+        if (winner == 'X' || winner == 'O')
+        {
+          isDone = true;
+        };
       }
 
       direction = changeDirection(inputChar);
@@ -117,4 +164,6 @@ int main()
       printBoard(board, currentX, currentY, isBlinking);
     }
   }
+
+  return 0;
 }
