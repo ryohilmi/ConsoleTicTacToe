@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void printBoard(char board[3][3], int x, int y)
+void printBoard(char board[3][3], int x, int y, bool isBlinking)
 {
   cout << "-------------" << endl;
 
@@ -14,7 +14,7 @@ void printBoard(char board[3][3], int x, int y)
   {
     for (int j = 0; j < 3; j++)
     {
-      char block = (i == y && j == x)
+      char block = (i == y && j == x && isBlinking)
                        ? '_'
                        : board[i][j];
 
@@ -79,21 +79,42 @@ int main()
   bool isXTurn = false;
   int currentX = 0, currentY = 0;
 
+  bool isBlinking = true;
+  time_t prevTime = time(NULL);
+
   while (1)
   {
+    if (difftime(time(NULL), prevTime) == 1)
+    {
+      isBlinking = !isBlinking;
+      prevTime = time(NULL);
+    }
+
     system("cls");
-    printBoard(board, currentX, currentY);
+    printBoard(board, currentX, currentY, isBlinking);
 
     if (kbhit())
     {
       system("cls");
+
+      isBlinking = true;
+      prevTime = time(NULL);
+
       char inputChar = getch();
+
+      char *currentBlock = &board[currentY][currentX];
+      if (inputChar == 13 && *currentBlock != 'X' && *currentBlock != 'O')
+      {
+        *currentBlock = isXTurn ? 'X' : 'O';
+        isXTurn = !isXTurn;
+        isBlinking = false;
+      }
 
       direction = changeDirection(inputChar);
 
       moveCursor(&currentX, &currentY, direction);
 
-      printBoard(board, currentX, currentY);
+      printBoard(board, currentX, currentY, isBlinking);
     }
   }
 }
