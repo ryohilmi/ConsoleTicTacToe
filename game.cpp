@@ -12,9 +12,11 @@ private:
   char direction;
   bool isXTurn = false;
   int currentX = 0, currentY = 0;
+  int totalTurn = 0;
 
 public:
   bool isDone = false;
+  bool isDraw = false;
   bool isBlinking = true;
   time_t prevTime = time(NULL);
 
@@ -110,6 +112,15 @@ public:
       *currentBlock = isXTurn ? 'X' : 'O';
       isXTurn = !isXTurn;
       isBlinking = false;
+      totalTurn++;
+
+      if (totalTurn == 9)
+      {
+        isDone = true;
+        isDraw = true;
+        isBlinking = false;
+        return;
+      }
 
       *winner = calculateWinner();
       if (*winner == 'X' || *winner == 'O')
@@ -162,8 +173,17 @@ int main()
   {
     if (game.isDone)
     {
-      cout << endl
-           << "!!!!! " << winner << " WINS !!!!!" << endl;
+      if (game.isDraw)
+      {
+        cout << endl
+             << "!!!!! DRAW !!!!!" << endl;
+      }
+      else
+      {
+        cout << endl
+             << "!!!!! " << winner << " WINS !!!!!" << endl;
+      }
+
       break;
     }
 
