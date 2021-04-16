@@ -10,7 +10,7 @@ private:
   char board[3][3] = {' '};
 
   char direction;
-  bool isXTurn = false;
+  bool isXTurn = true;
   int currentX = 0, currentY = 0;
   int totalTurn = 0;
 
