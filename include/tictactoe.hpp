@@ -40,6 +40,12 @@ public:
     }
 
     std::cout << "-------------" << std::endl;
+
+    if (!isDone)
+    {
+      std::cout << (isXTurn && !isDone ? "X's " : "O's ")
+                << "turn..." << std::endl;
+    }
   }
 
   void moveCursor()
